@@ -1,42 +1,42 @@
 # ===================================================
-#                    PRODUCT
+#                    PAYMENT
 # ===================================================
 
-# namespace: ecommerce-dev
+# namespace: roboshop-dev
 
 # ---------------------------------------------------
 # Container
 # ---------------------------------------------------
 image:
   ecr_registry: 254405569649.dkr.ecr.us-east-1.amazonaws.com
-  ecr_repository: ecommerce-dev/product
+  ecr_repository: roboshop-dev/payment
   tag: latest
   digest: sha256:a5c6e8120a55cc2f541421a56847c9bfd1bcc485b711234f514c776f6ac8ff34
-containerName: product
+containerName: payment
 imagePullPolicy: Always
 terminationGracePeriodSeconds: 30
 # ---------------------------------------------------
 # Labels
 # ---------------------------------------------------
 labels:
-  app.kubernetes.io/name: ecommerce
-  app.kubernetes.io/component: product
+  app.kubernetes.io/name: roboshop
+  app.kubernetes.io/component: payment
   app.kubernetes.io/env: dev
   app.kubernetes.io/version: 1.0.0
 # ---------------------------------------------------
 # Deployment
 # ---------------------------------------------------
 deployment:
-  name: product-deploy
+  name: payment-deploy
   replicas: 1
 # ---------------------------------------------------
 # Service
 # ---------------------------------------------------
 service:
-  name: product-svc
+  name: payment-svc
   type: ClusterIP
-  port: 8001
-  targetPort: 8001
+  port: 8080
+  targetPort: 8080
 # ---------------------------------------------------
 # Pod Annotations
 # ---------------------------------------------------
@@ -70,22 +70,23 @@ containerSecurityContext:
 # ---------------------------------------------------
 configmap:
   enabled: true
-  name: product-configmap
+  name: payment-configmap
   values:
-    ENVIRONMENT: "dev"
-    AWS_REGION: "us-east-1"
-    DYNAMODB_ENDPOINT: "https://dynamodb.us-east-1.amazonaws.com"
-    PRODUCTS_TABLE: "ecommerce-products"
+    CART_HOST: "cart"
+    CART_PORT: "8080"
+    USER_HOST: "user"
+    USER_PORT: "8080"
+    AMQP_HOST: "rabbitmq"
 secret:
-  name: ecommerce-dev-mysql-jwt-credentials
+  name: roboshop-dev-mysql-jwt-credentials
   create: false # Creates through ESO    
 envFrom:
   enabled: true
   values:
     - configMapRef:
-        name: product-configmap
-    - secretRef:
-        name: ecommerce-dev-postgre-jwt-credentials # Creates through ESO   
+        name: payment-configmap
+    # - secretRef:
+    #     name: roboshop-dev-postgre-jwt-credentials # Creates through ESO   
 # ---------------------------------------------------
 # Limits & Requests
 # ---------------------------------------------------
@@ -106,7 +107,7 @@ startupProbe:
   values:
     httpGet:
       path: /health
-      port: 8001
+      port: 8080
     failureThreshold: 10
     periodSeconds: 10
 readinessProbe:
@@ -114,7 +115,7 @@ readinessProbe:
   values:
     httpGet:
       path: /health
-      port: 8001
+      port: 8080
     initialDelaySeconds: 15
     periodSeconds: 10
 livenessProbe:
@@ -122,7 +123,7 @@ livenessProbe:
   values:
     httpGet:
       path: /health
-      port: 8001
+      port: 8080
     initialDelaySeconds: 20
     periodSeconds: 30
 # ---------------------------------------------------
@@ -131,7 +132,7 @@ livenessProbe:
 autoscaling:
   enabled: false
   values:
-    name: product-hpa
+    name: payment-hpa
     minReplicas: 1
     maxReplicas: 3
     targetCPUUtilizationPercentage: 70
@@ -140,20 +141,20 @@ autoscaling:
 # Service Account
 # ---------------------------------------------------
 serviceAccount:
-  create: true
+  create: false
   values:
-    name: product-sa
+    name: payment-sa
     annotations:
-      eks.amazonaws.com/role-arn: "arn:aws:iam::254405569649:role/ecommerce-dev-product-role"
+      eks.amazonaws.com/role-arn: "arn:aws:iam::254405569649:role/roboshop-dev-payment-role"
 # ---------------------------------------------------
 # Target Group Binding
 # ---------------------------------------------------
 targetGroupBinding:
   enabled: true
   values:
-    name: ecommerce-dev-product-tgb
+    name: roboshop-dev-payment-tgb
     targetType: "ip"
-    targetGroupName: ecommerce-dev-product-tg
+    targetGroupName: roboshop-dev-payment-tg
     # targetGroupARN: "REPLACE_WITH_TERRAFORM_OUTPUT"
 # ---------------------------------------------------
 # Node Selectors
