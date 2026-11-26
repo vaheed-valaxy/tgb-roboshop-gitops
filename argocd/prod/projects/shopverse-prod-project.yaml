@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: shopverse-prod
+  name: roboshop-prod
   namespace: argocd
 
 spec:
@@ -10,14 +10,14 @@ spec:
   # Allowed Git repositories
   # ============================================================
   sourceRepos:
-    - https://github.com/vaheed-valaxy/shopverse-gitops.git
+    - https://github.com/vaheed-valaxy/roboshop-gitops.git
 
   # ============================================================
   # Allowed destinations
   # ============================================================
   destinations:
     - server: https://kubernetes.default.svc
-      namespace: shopverse-prod
+      namespace: roboshop-prod
 
   # ============================================================
   # Cluster-wide resources this AppProject can manage
@@ -44,21 +44,21 @@ spec:
   # ============================================================
   roles:
 
-    - name: shopverse-gh-actions-prod
-      description: GitHub Actions role for syncing Shopverse PROD applications.
+    - name: roboshop-gh-actions-prod
+      description: GitHub Actions role for syncing roboshop PROD applications.
       
       policies:
 
         # Allow GitHub Actions to read the QA applications
-        - p, proj:shopverse-prod:shopverse-gh-actions-prod, applications, get, shopverse-prod/*, allow 
+        - p, proj:roboshop-prod:roboshop-gh-actions-prod, applications, get, roboshop-prod/*, allow 
 
         # Allow GitHub Actions to sync the QA applications
-        - p, proj:shopverse-prod:shopverse-gh-actions-prod, applications, sync, shopverse-prod/*, allow
+        - p, proj:roboshop-prod:roboshop-gh-actions-prod, applications, sync, roboshop-prod/*, allow
           
 
   # ============================================================
   # Description
   # ============================================================
   description: >
-    Single AppProject for prod environment of Shopverse application.
+    Single AppProject for prod environment of roboshop application.
     Provides GitOps permissions and allows automated namespace creation.
