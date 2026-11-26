@@ -2,14 +2,14 @@
 #                    USER
 # ===================================================
 
-# namespace: ecommerce-dev
+# namespace: roboshop-dev
 
 # ---------------------------------------------------
 # Container
 # ---------------------------------------------------
 image:
   ecr_registry: 254405569649.dkr.ecr.us-east-1.amazonaws.com
-  ecr_repository: ecommerce-dev/user
+  ecr_repository: roboshop-dev/user
   tag: latest
   digest: sha256:a5c6e8120a55cc2f541421a56847c9bfd1bcc485b711234f514c776f6ac8ff34
 containerName: user
@@ -19,7 +19,7 @@ terminationGracePeriodSeconds: 30
 # Labels
 # ---------------------------------------------------
 labels:
-  app.kubernetes.io/name: ecommerce
+  app.kubernetes.io/name: roboshop
   app.kubernetes.io/component: user
   app.kubernetes.io/env: dev
   app.kubernetes.io/version: 1.0.0
@@ -35,8 +35,8 @@ deployment:
 service:
   name: user-svc
   type: ClusterIP
-  port: 8003
-  targetPort: 8003
+  port: 8080
+  targetPort: 8080
 # ---------------------------------------------------
 # Pod Annotations
 # ---------------------------------------------------
@@ -72,23 +72,19 @@ configmap:
   enabled: true
   name: user-configmap
   values:
-    ENVIRONMENT: "dev"
-    AWS_REGION: "us-east-1"
-    DB_HOST: "ecommerce-dev-postgre.ca9aykaigakf.us-east-1.rds.amazonaws.com"
-    DB_PORT: "5432"
-    DB_NAME: "ecommercedb"
-    # DB_USER: ""
-    # DB_PASSWORD: ""
+    MONGO: "true"
+    REDIS_URL: 'redis://redis:6379'
+    MONGO_URL: "mongodb://mongodb:27017/users"
 secret:
-  name: ecommerce-dev-postgre-jwt-credentials
+  name: roboshop-dev-postgre-jwt-credentials
   create: false # Creates through ESO    
 envFrom:
   enabled: true
   values:
     - configMapRef:
         name: user-configmap
-    - secretRef:
-        name: ecommerce-dev-postgre-jwt-credentials # Creates through ESO   
+    # - secretRef:
+    #     name: roboshop-dev-postgre-jwt-credentials # Creates through ESO   
 # ---------------------------------------------------
 # Limits & Requests
 # ---------------------------------------------------
@@ -108,24 +104,24 @@ startupProbe:
   enabled: true
   values:
     httpGet:
-      path: /health
-      port: 8003
+      path: /
+      port: 8080
     failureThreshold: 10
     periodSeconds: 10
 readinessProbe:
   enabled: true
   values:
     httpGet:
-      path: /health
-      port: 8003
+      path: /
+      port: 8080
     initialDelaySeconds: 15
     periodSeconds: 10
 livenessProbe:
   enabled: true
   values:
     httpGet:
-      path: /health
-      port: 8003
+      path: /
+      port: 8080
     initialDelaySeconds: 20
     periodSeconds: 30
 # ---------------------------------------------------
@@ -147,16 +143,16 @@ serviceAccount:
   values:
     name: user-sa
     annotations:
-      eks.amazonaws.com/role-arn: "arn:aws:iam::254405569649:role/ecommerce-dev-user-role"
+      eks.amazonaws.com/role-arn: "arn:aws:iam::254405569649:role/roboshop-dev-user-role"
 # ---------------------------------------------------
 # Target Group Binding
 # ---------------------------------------------------
 targetGroupBinding:
   enabled: true
   values:
-    name: ecommerce-dev-user-tgb
+    name: roboshop-dev-user-tgb
     targetType: "ip"
-    targetGroupName: ecommerce-dev-user-tg
+    targetGroupName: roboshop-dev-user-tg
     # targetGroupARN: "REPLACE_WITH_TERRAFORM_OUTPUT"
 # ---------------------------------------------------
 # Node Selectors
