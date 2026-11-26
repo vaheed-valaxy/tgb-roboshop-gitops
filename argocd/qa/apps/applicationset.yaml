@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: shopverse-qa-applicationset
+  name: roboshop-qa-applicationset
   namespace: argocd
 spec:
   generators:
@@ -11,13 +11,13 @@ spec:
         generators:
           - list:
               elements: 
-                - project: shopverse
+                - project: roboshop
                   env: qa
-                  repoUrl: https://github.com/vaheed-valaxy/shopverse-gitops.git
+                  repoUrl: https://github.com/vaheed-valaxy/roboshop-gitops.git
 
           # SERVICES (auto-discovered from ONE env only to avoid duplication)        
           - git:
-              repoUrl: https://github.com/vaheed-valaxy/shopverse-gitops.git
+              repoUrl: https://github.com/vaheed-valaxy/roboshop-gitops.git
               revision: main
               directories:
                 - path: helm-charts-new/*
