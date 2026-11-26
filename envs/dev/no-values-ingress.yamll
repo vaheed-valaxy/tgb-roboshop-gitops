@@ -1,10 +1,10 @@
-namespace: shopverse-dev
+namespace: roboshop-dev
 # ──────────────────────────────────────--------------------------
 # BASE Ingress
 # ──────────────────────────────────────--------------------------
 baseIngress:
   enabled: true
-  name: shopverse-dev-base-ingress
+  name: roboshop-dev-base-ingress
   ingressClassName: alb
 
   path: /health
@@ -41,7 +41,7 @@ baseIngress:
     alb.ingress.kubernetes.io/unhealthy-threshold-count: "2"
     
     # Grouping (very important for multiple ingresses)
-    alb.ingress.kubernetes.io/group.name: shopverse-dev      # This should be same in all the ingress.yaml files to collaboratively create single ALB
+    alb.ingress.kubernetes.io/group.name: roboshop-dev      # This should be same in all the ingress.yaml files to collaboratively create single ALB
 
     # Highest priority
     alb.ingress.kubernetes.io/group.order: "0"
@@ -60,7 +60,7 @@ baseIngress:
 # ──────────────────────────────────────--------------------------
 backendIngress:
   enabled: true
-  name: shopverse-dev-backend-ingress
+  name: roboshop-dev-backend-ingress
   ingressClassName: alb
   
   path: /api
@@ -77,7 +77,7 @@ backendIngress:
     alb.ingress.kubernetes.io/healthcheck-port: traffic-port
   
     # This is important to mix all the service ingresses and form one complete ingress
-    alb.ingress.kubernetes.io/group.name: shopverse-dev    # This should be same in all the ingress.yaml files to collaboratively create single ALB
+    alb.ingress.kubernetes.io/group.name: roboshop-dev    # This should be same in all the ingress.yaml files to collaboratively create single ALB
 
     alb.ingress.kubernetes.io/group.order: "1"   # 🔥 higher priority
 
@@ -86,7 +86,7 @@ backendIngress:
 # ──────────────────────────────────────--------------------------
 frontendIngress:
   enabled: true
-  name: shopverse-dev-frontend-ingress
+  name: roboshop-dev-frontend-ingress
   ingressClassName: alb
   
   path: /
@@ -104,6 +104,6 @@ frontendIngress:
     alb.ingress.kubernetes.io/healthcheck-port: traffic-port
     
     # This is important to mix all the service ingresses and form one complete ingress
-    alb.ingress.kubernetes.io/group.name: shopverse-dev    # This should be same in all the ingress.yaml files to collaboratively create single ALB
+    alb.ingress.kubernetes.io/group.name: roboshop-dev    # This should be same in all the ingress.yaml files to collaboratively create single ALB
 
     alb.ingress.kubernetes.io/group.order: "2"   # 🔥 lower priority
