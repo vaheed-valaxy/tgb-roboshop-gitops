@@ -147,7 +147,7 @@ serviceAccount:
 # Target Group Binding
 # ---------------------------------------------------
 targetGroupBinding:
-  enabled: true
+  enabled: false
   values:
     name: roboshop-dev-catalogue-tgb
     targetType: "ip"
