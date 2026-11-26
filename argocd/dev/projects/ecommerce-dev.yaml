@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: ecommerce-dev
+  name: roboshop-dev
   namespace: argocd
 
 spec:
@@ -10,14 +10,14 @@ spec:
   # Allowed Git repositories
   # ============================================================
   sourceRepos:
-    - https://github.com/vaheed-valaxy/tgb-ecommerce-gitops.git
+    - https://github.com/vaheed-valaxy/tgb-roboshop-gitops.git
 
   # ============================================================
   # Allowed destinations
   # ============================================================
   destinations:
     - server: https://kubernetes.default.svc
-      namespace: ecommerce-dev
+      namespace: roboshop-dev
 
   # ============================================================
   # Cluster-wide resources this AppProject can manage
@@ -44,16 +44,16 @@ spec:
   # ============================================================
   roles:
 
-    - name: ecommerce-gh-actions-dev
+    - name: roboshop-gh-actions-dev
       description: GitHub Actions role for syncing E-commerce DEV applications.
       
       policies:
 
         # Allow GitHub Actions to read the DEV applications
-        - p, proj:ecommerce-dev:ecommerce-gh-actions-dev, applications, get, ecommerce-dev/*, allow 
+        - p, proj:roboshop-dev:roboshop-gh-actions-dev, applications, get, roboshop-dev/*, allow 
 
         # Allow GitHub Actions to sync the DEV applications
-        - p, proj:ecommerce-dev:ecommerce-gh-actions-dev, applications, sync, ecommerce-dev/*, allow
+        - p, proj:roboshop-dev:roboshop-gh-actions-dev, applications, sync, roboshop-dev/*, allow
           
         # -p, proj:<proj_name>:<role_name>, applications, sync, <proj_name>/*, allow
   # ============================================================
