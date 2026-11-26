@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: ecommerce-dev-applicationset
+  name: roboshop-dev-applicationset
   namespace: argocd
 spec:
   generators:
@@ -11,13 +11,13 @@ spec:
         generators:
           - list:
               elements: 
-                - project: ecommerce
+                - project: roboshop
                   env: dev
-                  repoURL: https://github.com/vaheed-valaxy/tgb-ecommerce-gitops.git
+                  repoURL: https://github.com/vaheed-valaxy/tgb-roboshop-gitops.git
 
           # SERVICES (auto-discovered from ONE env only to avoid duplication)        
           - git:
-              repoURL: https://github.com/vaheed-valaxy/tgb-ecommerce-gitops.git
+              repoURL: https://github.com/vaheed-valaxy/tgb-roboshop-gitops.git
               revision: main
               directories:
                 - path: helm-charts-new/services/*
@@ -54,7 +54,7 @@ spec:
       # - DEV deployment is intentionally MANUAL.
       # - Do NOT add "spec.syncPolicy.automated".
       # - Git changes will make the Application OutOfSync,
-      # - But deployment happens only when GitHub Actions runs: "argocd app sync ecommerce-dev-backend"
+      # - But deployment happens only when GitHub Actions runs: "argocd app sync roboshop-dev-backend"
         
       syncPolicy:
         automated:
