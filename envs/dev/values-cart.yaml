@@ -2,14 +2,14 @@
 #                    CART
 # ===================================================
 
-# namespace: ecommerce-dev
+# namespace: roboshop-dev
 
 # ---------------------------------------------------
 # Container
 # ---------------------------------------------------
 image:
   ecr_registry: 254405569649.dkr.ecr.us-east-1.amazonaws.com
-  ecr_repository: ecommerce-dev/cart
+  ecr_repository: roboshop-dev/cart
   tag: latest
   digest: sha256:a5c6e8120a55cc2f541421a56847c9bfd1bcc485b711234f514c776f6ac8ff34
 containerName: cart
@@ -19,7 +19,7 @@ terminationGracePeriodSeconds: 30
 # Labels
 # ---------------------------------------------------
 labels:
-  app.kubernetes.io/name: ecommerce
+  app.kubernetes.io/name: roboshop
   app.kubernetes.io/component: cart
   app.kubernetes.io/env: dev
   app.kubernetes.io/version: 1.0.0
@@ -35,8 +35,8 @@ deployment:
 service:
   name: cart-svc
   type: ClusterIP
-  port: 8002
-  targetPort: 8002
+  port: 8080
+  targetPort: 8080
 # ---------------------------------------------------
 # Pod Annotations
 # ---------------------------------------------------
@@ -72,20 +72,19 @@ configmap:
   enabled: true
   name: cart-configmap
   values:
-    ENVIRONMENT: "dev"
-    AWS_REGION: "us-east-1"
-    DYNAMODB_ENDPOINT: "https://dynamodb.us-east-1.amazonaws.com"
-    CARTS_TABLE: "ecommerce-cart"
+    REDIS_HOST: redis
+    CATALOGUE_HOST: catalogue
+    CATALOGUE_PORT: 8080
 secret:
-  name: ecommerce-dev-postgre-jwt-credentials
+  name: roboshop-dev-postgre-jwt-credentials
   create: false # Creates through ESO    
 envFrom:
   enabled: true
   values:
     - configMapRef:
         name: cart-configmap
-    - secretRef:
-        name: ecommerce-dev-postgre-jwt-credentials # Creates through ESO   
+    # - secretRef:
+    #     name: roboshop-dev-postgre-jwt-credentials # Creates through ESO   
 # ---------------------------------------------------
 # Limits & Requests
 # ---------------------------------------------------
@@ -101,30 +100,30 @@ resources:
 # ---------------------------------------------------
 # Healthcheck Probes
 # ---------------------------------------------------
-startupProbe:
-  enabled: true
-  values:
-    httpGet:
-      path: /health
-      port: 8002
-    failureThreshold: 10
-    periodSeconds: 10
-readinessProbe:
-  enabled: true
-  values:
-    httpGet:
-      path: /health
-      port: 8002
-    initialDelaySeconds: 15
-    periodSeconds: 10
-livenessProbe:
-  enabled: true
-  values:
-    httpGet:
-      path: /health
-      port: 8002
-    initialDelaySeconds: 20
-    periodSeconds: 30
+# startupProbe:
+#   enabled: true
+#   values:
+#     httpGet:
+#       path: /health
+#       port: 8002
+#     failureThreshold: 10
+#     periodSeconds: 10
+# readinessProbe:
+#   enabled: true
+#   values:
+#     httpGet:
+#       path: /health
+#       port: 8002
+#     initialDelaySeconds: 15
+#     periodSeconds: 10
+# livenessProbe:
+#   enabled: true
+#   values:
+#     httpGet:
+#       path: /health
+#       port: 8002
+#     initialDelaySeconds: 20
+#     periodSeconds: 30
 # ---------------------------------------------------
 # Autoscaling
 # ---------------------------------------------------
@@ -140,20 +139,20 @@ autoscaling:
 # Service Account
 # ---------------------------------------------------
 serviceAccount:
-  create: true
+  create: false
   values:
     name: cart-sa
     annotations:
-      eks.amazonaws.com/role-arn: "arn:aws:iam::254405569649:role/ecommerce-dev-cart-role"
+      eks.amazonaws.com/role-arn: "arn:aws:iam::254405569649:role/roboshop-dev-cart-role"
 # ---------------------------------------------------
 # Target Group Binding
 # ---------------------------------------------------
 targetGroupBinding:
   enabled: true
   values:
-    name: ecommerce-dev-cart-tgb
+    name: roboshop-dev-cart-tgb
     targetType: "ip"
-    targetGroupName: ecommerce-dev-cart-tg
+    targetGroupName: roboshop-dev-cart-tg
     # targetGroupARN: "REPLACE_WITH_TERRAFORM_OUTPUT"
 # ---------------------------------------------------
 # Node Selectors
