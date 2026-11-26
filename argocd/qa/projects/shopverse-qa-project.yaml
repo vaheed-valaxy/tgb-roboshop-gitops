@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: shopverse-qa
+  name: roboshop-qa
   namespace: argocd
 
 spec:
@@ -10,14 +10,14 @@ spec:
   # Allowed Git repositories
   # ============================================================
   sourceRepos:
-    - https://github.com/vaheed-valaxy/shopverse-gitops.git
+    - https://github.com/vaheed-valaxy/roboshop-gitops.git
 
   # ============================================================
   # Allowed destinations
   # ============================================================
   destinations:
     - server: https://kubernetes.default.svc
-      namespace: shopverse-qa
+      namespace: roboshop-qa
 
   # ============================================================
   # Cluster-wide resources this AppProject can manage
@@ -44,21 +44,21 @@ spec:
   # ============================================================
   roles:
 
-    - name: shopverse-gh-actions-qa
-      description: GitHub Actions role for syncing Shopverse QA applications.
+    - name: roboshop-gh-actions-qa
+      description: GitHub Actions role for syncing roboshop QA applications.
       
       policies:
 
         # Allow GitHub Actions to read the QA applications
-        - p, proj:shopverse-qa:shopverse-gh-actions-qa, applications, get, shopverse-qa/*, allow 
+        - p, proj:roboshop-qa:roboshop-gh-actions-qa, applications, get, roboshop-qa/*, allow 
 
         # Allow GitHub Actions to sync the QA applications
-        - p, proj:shopverse-qa:shopverse-gh-actions-qa, applications, sync, shopverse-qa/*, allow
+        - p, proj:roboshop-qa:roboshop-gh-actions-qa, applications, sync, roboshop-qa/*, allow
           
 
   # ============================================================
   # Description
   # ============================================================
   description: >
-    Single AppProject for qa environment of Shopverse application.
+    Single AppProject for qa environment of roboshop application.
     Provides GitOps permissions and allows automated namespace creation.
