@@ -1,42 +1,42 @@
 # ===================================================
-#                    ORDER
+#                    FRONTEND
 # ===================================================
 
-# namespace: ecommerce-dev
+# namespace: roboshop-dev
 
 # ---------------------------------------------------
 # Container
 # ---------------------------------------------------
 image:
   ecr_registry: 254405569649.dkr.ecr.us-east-1.amazonaws.com
-  ecr_repository: ecommerce-dev/order
+  ecr_repository: roboshop-dev/frontend
   tag: latest
   digest: sha256:a5c6e8120a55cc2f541421a56847c9bfd1bcc485b711234f514c776f6ac8ff34
-containerName: order
+containerName: frontend
 imagePullPolicy: Always
 terminationGracePeriodSeconds: 30
 # ---------------------------------------------------
 # Labels
 # ---------------------------------------------------
 labels:
-  app.kubernetes.io/name: ecommerce
-  app.kubernetes.io/component: order
+  app.kubernetes.io/name: roboshop
+  app.kubernetes.io/component: frontend
   app.kubernetes.io/env: dev
   app.kubernetes.io/version: 1.0.0
 # ---------------------------------------------------
 # Deployment
 # ---------------------------------------------------
 deployment:
-  name: order-deploy
+  name: frontend-deploy
   replicas: 1
 # ---------------------------------------------------
 # Service
 # ---------------------------------------------------
 service:
-  name: order-svc
+  name: frontend-svc
   type: ClusterIP
-  port: 8004
-  targetPort: 8004
+  port: 8080
+  targetPort: 8080
 # ---------------------------------------------------
 # Pod Annotations
 # ---------------------------------------------------
@@ -70,13 +70,13 @@ containerSecurityContext:
 # ---------------------------------------------------
 configmap:
   enabled: true
-  name: order-configmap
+  name: frontend-configmap
   values:
     ENVIRONMENT: "dev"
     AWS_REGION: "us-east-1"
-    DB_HOST: "ecommerce-dev-postgre.ca9aykaigakf.us-east-1.rds.amazonaws.com"
+    DB_HOST: "roboshop-dev-postgre.ca9aykaigakf.us-east-1.rds.amazonaws.com"
     DB_PORT: "5432"
-    DB_NAME: "ecommercedb"
+    DB_NAME: "roboshopdb"
     # DB_USER: ""
     # DB_PASSWORD: ""
     PRODUCT_SERVICE_URL: "http://product-svc:8001"
@@ -85,15 +85,15 @@ configmap:
     SNS_ENDPOINT: ""
     SNS_TOPIC_ARN: ""
 secret:
-  name: ecommerce-dev-postgre-jwt-credentials
+  name: roboshop-dev-postgre-jwt-credentials
   create: false # Creates through ESO    
 envFrom:
   enabled: true
   values:
     - configMapRef:
-        name: order-configmap
-    - secretRef:
-        name: ecommerce-dev-postgre-jwt-credentials # Creates through ESO   
+        name: frontend-configmap
+    # - secretRef:
+    #     name: roboshop-dev-postgre-jwt-credentials # Creates through ESO   
 # ---------------------------------------------------
 # Limits & Requests
 # ---------------------------------------------------
@@ -114,7 +114,7 @@ startupProbe:
   values:
     httpGet:
       path: /health
-      port: 8004
+      port: 8080
     failureThreshold: 10
     periodSeconds: 10
 readinessProbe:
@@ -122,7 +122,7 @@ readinessProbe:
   values:
     httpGet:
       path: /health
-      port: 8004
+      port: 8080
     initialDelaySeconds: 15
     periodSeconds: 10
 livenessProbe:
@@ -130,7 +130,7 @@ livenessProbe:
   values:
     httpGet:
       path: /health
-      port: 8004
+      port: 8080
     initialDelaySeconds: 20
     periodSeconds: 30
 # ---------------------------------------------------
@@ -139,7 +139,7 @@ livenessProbe:
 autoscaling:
   enabled: false
   values:
-    name: order-hpa
+    name: frontend-hpa
     minReplicas: 1
     maxReplicas: 3
     targetCPUUtilizationPercentage: 70
@@ -150,18 +150,18 @@ autoscaling:
 serviceAccount:
   create: false
   values:
-    name: order-sa
+    name: frontend-sa
     annotations:
-      eks.amazonaws.com/role-arn: "arn:aws:iam::254405569649:role/ecommerce-dev-order-role"
+      eks.amazonaws.com/role-arn: "arn:aws:iam::254405569649:role/roboshop-dev-frontend-role"
 # ---------------------------------------------------
 # Target Group Binding
 # ---------------------------------------------------
 targetGroupBinding:
   enabled: true
   values:
-    name: ecommerce-dev-order-tgb
+    name: roboshop-dev-frontend-tgb
     targetType: "ip"
-    targetGroupName: ecommerce-dev-order-tg
+    targetGroupName: roboshop-dev-frontend-tg
     # targetGroupARN: "REPLACE_WITH_TERRAFORM_OUTPUT"
 # ---------------------------------------------------
 # Node Selectors
