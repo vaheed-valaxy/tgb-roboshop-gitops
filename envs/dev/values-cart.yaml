@@ -76,7 +76,7 @@ configmap:
     CATALOGUE_HOST: catalogue
     CATALOGUE_PORT: 8080
 secret:
-  name: roboshop-dev-postgre-jwt-credentials
+  name: roboshop-dev-mysql-jwt-credentials
   create: false # Creates through ESO    
 envFrom:
   enabled: true
@@ -84,7 +84,7 @@ envFrom:
     - configMapRef:
         name: cart-configmap
     # - secretRef:
-    #     name: roboshop-dev-postgre-jwt-credentials # Creates through ESO   
+    #     name: roboshop-dev-mysql-jwt-credentials # Creates through ESO   
 # ---------------------------------------------------
 # Limits & Requests
 # ---------------------------------------------------
