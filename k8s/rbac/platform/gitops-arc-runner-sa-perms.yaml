@@ -10,7 +10,7 @@ metadata:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: ecommerce-gitops-runner-sa
+  name: roboshop-gitops-runner-sa
   namespace: arc-runners
 automountServiceAccountToken: true
 
@@ -18,7 +18,7 @@ automountServiceAccountToken: true
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: ecommerce-gitops-port-forward-role
+  name: roboshop-gitops-port-forward-role
   namespace: argocd
 rules:
   # Allow reading the Argo CD Service.
@@ -49,13 +49,13 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: ecommerce-gitops-port-forward-binding
+  name: roboshop-gitops-port-forward-binding
   namespace: argocd
 subjects:
   - kind: ServiceAccount
-    name: ecommerce-gitops-runner-sa
+    name: roboshop-gitops-runner-sa
     namespace: arc-runners
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: ecommerce-gitops-port-forward-role
+  name: roboshop-gitops-port-forward-role
