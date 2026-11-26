@@ -32,7 +32,7 @@ permissions:
   id-token: write
 
 env:
-  RUNS_ON: ecommerce-gitops-runners             # ubuntu-latest
+  RUNS_ON: roboshop-gitops-runners             # ubuntu-latest
 
 jobs:
 
@@ -197,11 +197,11 @@ jobs:
       values-file: ${{ needs.Detect-Changes-Job.outputs.helm_values_file }}
 
       deploy-to-dev: true
-      eks-cluster-name: 'ecommerce-dev-eks-cluster'
-      dev-namespace: "ecommerce-${{ needs.Detect-Changes-Job.outputs.environment }}"
+      eks-cluster-name: 'roboshop-dev-eks-cluster'
+      dev-namespace: "roboshop-${{ needs.Detect-Changes-Job.outputs.environment }}"
       argocd-host: '127.0.0.1'
       argocd-port: '8090'                     # port-forward purpose
-      argocd-app: "ecommerce-${{ needs.Detect-Changes-Job.outputs.environment }}-${{ needs.Detect-Changes-Job.outputs.component }}"
+      argocd-app: "roboshop-${{ needs.Detect-Changes-Job.outputs.environment }}-${{ needs.Detect-Changes-Job.outputs.component }}"
       
     secrets:
       ARGOCD_AUTH_TOKEN: ${{ secrets.DEV_ARGOCD_AUTH_TOKEN }}
