@@ -60,5 +60,5 @@ spec:
   # Description
   # ============================================================
   description: >
-    Single AppProject for dev environment of E-commerce application.
+    Single AppProject for dev environment of Roboshop application.
     Provides GitOps permissions and allows automated namespace creation.
