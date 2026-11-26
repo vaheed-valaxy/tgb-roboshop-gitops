@@ -150,7 +150,7 @@ serviceAccount:
 # Target Group Binding
 # ---------------------------------------------------
 targetGroupBinding:
-  enabled: true
+  enabled: false
   values:
     name: roboshop-dev-payment-tgb
     targetType: "ip"
