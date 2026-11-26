@@ -1,15 +1,15 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: ecommerce-arc-runners
+  name: roboshop-arc-runners
   namespace: argocd
 
 spec:
-  description: Ecommerce ARC runner scale sets.
+  description: roboshop ARC runner scale sets.
 
   sourceRepos:
     - ghcr.io/actions/actions-runner-controller-charts
-    - https://github.com/vaheed-valaxy/tgb-ecommerce-gitops.git
+    - https://github.com/vaheed-valaxy/tgb-roboshop-gitops.git
 
   destinations:
     - server: https://kubernetes.default.svc
