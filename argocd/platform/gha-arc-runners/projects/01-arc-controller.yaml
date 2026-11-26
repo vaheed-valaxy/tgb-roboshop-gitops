@@ -1,15 +1,15 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: ecommerce-arc-controller
+  name: roboshop-arc-controller
   namespace: argocd
 
 spec:
-  description: Ecommerce ARC controller.
+  description: roboshop ARC controller.
 
   sourceRepos:
     - ghcr.io/actions/actions-runner-controller-charts
-    # - https://github.com/vaheed-valaxy/tgb-ecommerce-gitops.git
+    # - https://github.com/vaheed-valaxy/tgb-roboshop-gitops.git
 
   destinations:
     - server: https://kubernetes.default.svc
