@@ -79,7 +79,7 @@ configmap:
     CATALOGUE_PORT: 8080
 secret:
   name: roboshop-dev-mysql-jwt-credentials
-  create: false # Creates through ESO    
+  create: false          # Creates through ESO    
 envFrom:
   enabled: false
   values:
@@ -111,7 +111,7 @@ startupProbe:
     failureThreshold: 10
     periodSeconds: 10
 readinessProbe:
-  enabled: true
+  enabled: false
   values:
     httpGet:
       path: /
@@ -119,7 +119,7 @@ readinessProbe:
     initialDelaySeconds: 15
     periodSeconds: 10
 livenessProbe:
-  enabled: true
+  enabled: false
   values:
     httpGet:
       path: /
