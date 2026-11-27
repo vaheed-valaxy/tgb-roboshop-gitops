@@ -9,12 +9,12 @@
 # ---------------------------------------------------
 image:
   ecr_registry: 254405569649.dkr.ecr.us-east-1.amazonaws.com
-  ecr_repository: roboshop-dev/cart
+  ecr_repository: roboshop-dev/rabbitmq
   docker_registry: docker.io
-  docker_repository: vaheeddockerhub/roboshop-dev-cart
+  docker_repository: vaheeddockerhub/roboshop-dev-rabbitmq
   tag: latest
   digest: sha256:a5c6e8120a55cc2f541421a56847c9bfd1bcc485b711234f514c776f6ac8ff34
-containerName: cart
+containerName: rabbitmq
 imagePullPolicy: Always
 terminationGracePeriodSeconds: 30
 # ---------------------------------------------------
@@ -22,28 +22,28 @@ terminationGracePeriodSeconds: 30
 # ---------------------------------------------------
 labels:
   app.kubernetes.io/name: roboshop
-  app.kubernetes.io/component: cart
+  app.kubernetes.io/component: rabbitmq
   app.kubernetes.io/env: dev
   app.kubernetes.io/version: 1.0.0
 # ---------------------------------------------------
 # Deployment
 # ---------------------------------------------------
 deployment:
-  name: cart-deploy
+  name: rabbitmq-deploy
   replicas: 1
 # ---------------------------------------------------
 # Service
 # ---------------------------------------------------
 service:
-  name: cart-svc
+  name: rabbitmq-svc
   type: ClusterIP
-  port: 8080
-  targetPort: 8080
+  port: 5672
+  targetPort: 5672
 # ---------------------------------------------------
 # Pod Annotations
 # ---------------------------------------------------
 annotations:
-  enabled: true
+  enabled: false
   enable_checksum: true
   checksum_file: configmap.yaml
   values:
@@ -52,7 +52,7 @@ annotations:
 # Security Context
 # ---------------------------------------------------
 podSecurityContext:
-  enabled: true
+  enabled: false
   values:
     fsGroup: 2000
     runAsNonRoot: true
@@ -71,27 +71,33 @@ containerSecurityContext:
 # Configmaps & Secrets
 # ---------------------------------------------------
 configmap:
-  enabled: true
-  name: cart-configmap
+  enabled: false
+  name: rabbitmq-configmap
   values:
     REDIS_HOST: redis
     CATALOGUE_HOST: catalogue
     CATALOGUE_PORT: 8080
 secret:
-  name: roboshop-dev-mysql-jwt-credentials
-  create: false # Creates through ESO    
+  create: true  
+  name: rabbitmq
+  values:
+    RABBITMQ_DEFAULT_USER: cm9ib3Nob3AK
+    RABBITMQ_DEFAULT_PASS: cm9ib3Nob3AxMjMK
+      
 envFrom:
   enabled: true
   values:
-    - configMapRef:
-        name: cart-configmap
+    - secretRef:
+        name: rabbitmq   
+    # - configMapRef:
+    #     name: rabbitmq-configmap
     # - secretRef:
     #     name: roboshop-dev-mysql-jwt-credentials # Creates through ESO   
 # ---------------------------------------------------
 # Limits & Requests
 # ---------------------------------------------------
 resources:
-  enabled: true
+  enabled: false
   values:
     requests:
       cpu: "100m"
@@ -103,7 +109,7 @@ resources:
 # Healthcheck Probes
 # ---------------------------------------------------
 startupProbe:
-  enabled: true
+  enabled: false
   values:
     httpGet:
       path: /
@@ -132,7 +138,7 @@ livenessProbe:
 autoscaling:
   enabled: false
   values:
-    name: cart-hpa
+    name: rabbitmq-hpa
     minReplicas: 1
     maxReplicas: 3
     targetCPUUtilizationPercentage: 70
@@ -143,18 +149,18 @@ autoscaling:
 serviceAccount:
   create: false
   values:
-    name: cart-sa
+    name: rabbitmq-sa
     annotations:
-      eks.amazonaws.com/role-arn: "arn:aws:iam::254405569649:role/roboshop-dev-cart-role"
+      eks.amazonaws.com/role-arn: "arn:aws:iam::254405569649:role/roboshop-dev-rabbitmq-role"
 # ---------------------------------------------------
 # Target Group Binding
 # ---------------------------------------------------
 targetGroupBinding:
   enabled: false
   values:
-    name: roboshop-dev-cart-tgb
+    name: roboshop-dev-rabbitmq-tgb
     targetType: "ip"
-    targetGroupName: roboshop-dev-cart-tg
+    targetGroupName: roboshop-dev-rabbitmq-tg
     # targetGroupARN: "REPLACE_WITH_TERRAFORM_OUTPUT"
 # ---------------------------------------------------
 # Node Selectors
