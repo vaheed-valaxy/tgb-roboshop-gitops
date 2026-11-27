@@ -11,8 +11,8 @@ image:
   ecr_registry: 254405569649.dkr.ecr.us-east-1.amazonaws.com
   ecr_repository: roboshop-dev/payment
   docker_registry: docker.io
-  docker_repository: vaheeddockerhub/roboshop-dev-payment
-  tag: latest
+  docker_repository: joindevops/payment
+  tag: 4.0.0
   digest: sha256:a5c6e8120a55cc2f541421a56847c9bfd1bcc485b711234f514c776f6ac8ff34
 containerName: payment
 imagePullPolicy: Always
@@ -74,14 +74,15 @@ configmap:
   enabled: true
   name: payment-configmap
   values:
-    CART_HOST: "cart"
+    CART_HOST: "cart-svc"
     CART_PORT: "8080"
-    USER_HOST: "user"
+    USER_HOST: "user-svc"
     USER_PORT: "8080"
-    AMQP_HOST: "rabbitmq"
+    AMQP_HOST: "rabbitmq-svc"
 secret:
+  create: false # Creates through ESO
   name: roboshop-dev-mysql-jwt-credentials
-  create: false # Creates through ESO    
+      
 envFrom:
   enabled: true
   values:
