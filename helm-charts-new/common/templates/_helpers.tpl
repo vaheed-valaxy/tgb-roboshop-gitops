@@ -1,10 +1,10 @@
 {{/*
-{{- define "shopverse.backend.image" -}}
+{{- define "deploy.image" -}}
 {{ printf "%s/%s@%s" .Values.image.ecr_registry .Values.image.ecr_repository .Values.image.digest }}
 {{- end }}
 */}}
 
-{{- define "shopverse.backend.image" -}}
+{{- define "deploy.image" -}}
 {{ printf "%s/%s:%s" .Values.image.ecr_registry .Values.image.ecr_repository .Values.image.tag }}
 {{- end }}
 
