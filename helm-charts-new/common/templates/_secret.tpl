@@ -4,7 +4,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ .Values.secret.name }}                            # shopverse-config
+  name: {{ .Values.secret.name }}                            # shopverse-secret
   # namespace: {{ .Values.namespace }}                       # shopverse-dev
   type: Opaque
   {{- with .Values.labels }}
