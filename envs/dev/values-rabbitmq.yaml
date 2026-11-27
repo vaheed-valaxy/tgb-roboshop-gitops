@@ -11,8 +11,8 @@ image:
   ecr_registry: 254405569649.dkr.ecr.us-east-1.amazonaws.com
   ecr_repository: roboshop-dev/rabbitmq
   docker_registry: docker.io
-  docker_repository: vaheeddockerhub/roboshop-dev-rabbitmq
-  tag: latest
+  docker_repository: rabbitmq
+  tag: 3
   digest: sha256:a5c6e8120a55cc2f541421a56847c9bfd1bcc485b711234f514c776f6ac8ff34
 containerName: rabbitmq
 imagePullPolicy: Always
