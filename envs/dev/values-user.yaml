@@ -11,8 +11,8 @@ image:
   ecr_registry: 254405569649.dkr.ecr.us-east-1.amazonaws.com
   ecr_repository: roboshop-dev/user
   docker_registry: docker.io
-  docker_repository: vaheeddockerhub/roboshop-dev-user
-  tag: latest
+  docker_repository: joindevops/user
+  tag: 4.0.0
   digest: sha256:a5c6e8120a55cc2f541421a56847c9bfd1bcc485b711234f514c776f6ac8ff34
 containerName: user
 imagePullPolicy: Always
@@ -75,11 +75,12 @@ configmap:
   name: user-configmap
   values:
     MONGO: "true"
-    REDIS_URL: 'redis://redis:6379'
-    MONGO_URL: "mongodb://mongodb:27017/users"
+    REDIS_URL: "redis://redis-svc:6379"
+    MONGO_URL: "mongodb://mongodb-svc:27017/users"
 secret:
+  create: false # Creates through ESO 
   name: roboshop-dev-postgre-jwt-credentials
-  create: false # Creates through ESO    
+     
 envFrom:
   enabled: true
   values:
