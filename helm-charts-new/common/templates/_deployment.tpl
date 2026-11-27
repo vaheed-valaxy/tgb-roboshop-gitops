@@ -64,7 +64,7 @@ spec:
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       containers:
         - name: {{ .Values.containerName }}  
-          image: '{{ include "shopverse.backend.image" . }}'
+          image: '{{ include "deploy.image" . }}'
           imagePullPolicy: {{ .Values.imagePullPolicy | default "IfNotPresent" }}   # Always # IfNotPresent 
           ports:
             - containerPort: {{ .Values.service.targetPort }} # 8080
