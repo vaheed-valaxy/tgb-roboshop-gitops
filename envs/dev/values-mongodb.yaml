@@ -9,12 +9,12 @@
 # ---------------------------------------------------
 image:
   ecr_registry: 254405569649.dkr.ecr.us-east-1.amazonaws.com
-  ecr_repository: roboshop-dev/mongo
+  ecr_repository: roboshop-dev/mongodb
   docker_registry: docker.io
-  docker_repository: vaheeddockerhub/roboshop-dev-mongo
+  docker_repository: joindevops/mongodb:4.0.0
   tag: latest
   digest: sha256:a5c6e8120a55cc2f541421a56847c9bfd1bcc485b711234f514c776f6ac8ff34
-containerName: mongo
+containerName: mongodb
 imagePullPolicy: Always
 terminationGracePeriodSeconds: 30
 # ---------------------------------------------------
@@ -22,20 +22,20 @@ terminationGracePeriodSeconds: 30
 # ---------------------------------------------------
 labels:
   app.kubernetes.io/name: roboshop
-  app.kubernetes.io/component: mongo
+  app.kubernetes.io/component: mongodb
   app.kubernetes.io/env: dev
   app.kubernetes.io/version: 1.0.0
 # ---------------------------------------------------
 # Deployment
 # ---------------------------------------------------
 deployment:
-  name: mongo-deploy
+  name: mongodb-deploy
   replicas: 1
 # ---------------------------------------------------
 # Service
 # ---------------------------------------------------
 service:
-  name: mongo-svc
+  name: mongodb-svc
   type: ClusterIP
   port: 27017
   targetPort: 27017
@@ -72,7 +72,7 @@ containerSecurityContext:
 # ---------------------------------------------------
 configmap:
   enabled: true
-  name: mongo-configmap
+  name: mongodb-configmap
   values:
     REDIS_HOST: redis
     CATALOGUE_HOST: catalogue
@@ -84,7 +84,7 @@ envFrom:
   enabled: true
   values:
     - configMapRef:
-        name: mongo-configmap
+        name: mongodb-configmap
     # - secretRef:
     #     name: roboshop-dev-mysql-jwt-credentials # Creates through ESO   
 # ---------------------------------------------------
@@ -132,7 +132,7 @@ livenessProbe:
 autoscaling:
   enabled: false
   values:
-    name: mongo-hpa
+    name: mongodb-hpa
     minReplicas: 1
     maxReplicas: 3
     targetCPUUtilizationPercentage: 70
@@ -143,18 +143,18 @@ autoscaling:
 serviceAccount:
   create: false
   values:
-    name: mongo-sa
+    name: mongodb-sa
     annotations:
-      eks.amazonaws.com/role-arn: "arn:aws:iam::254405569649:role/roboshop-dev-mongo-role"
+      eks.amazonaws.com/role-arn: "arn:aws:iam::254405569649:role/roboshop-dev-mongodb-role"
 # ---------------------------------------------------
 # Target Group Binding
 # ---------------------------------------------------
 targetGroupBinding:
   enabled: false
   values:
-    name: roboshop-dev-mongo-tgb
+    name: roboshop-dev-mongodb-tgb
     targetType: "ip"
-    targetGroupName: roboshop-dev-mongo-tg
+    targetGroupName: roboshop-dev-mongodb-tg
     # targetGroupARN: "REPLACE_WITH_TERRAFORM_OUTPUT"
 # ---------------------------------------------------
 # Node Selectors
