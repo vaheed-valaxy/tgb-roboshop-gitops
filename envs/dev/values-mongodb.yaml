@@ -1,0 +1,175 @@
+# ===================================================
+#                    CART
+# ===================================================
+
+# namespace: roboshop-dev
+
+# ---------------------------------------------------
+# Container
+# ---------------------------------------------------
+image:
+  ecr_registry: 254405569649.dkr.ecr.us-east-1.amazonaws.com
+  ecr_repository: roboshop-dev/cart
+  docker_registry: docker.io
+  docker_repository: vaheeddockerhub/roboshop-dev-cart
+  tag: latest
+  digest: sha256:a5c6e8120a55cc2f541421a56847c9bfd1bcc485b711234f514c776f6ac8ff34
+containerName: cart
+imagePullPolicy: Always
+terminationGracePeriodSeconds: 30
+# ---------------------------------------------------
+# Labels
+# ---------------------------------------------------
+labels:
+  app.kubernetes.io/name: roboshop
+  app.kubernetes.io/component: cart
+  app.kubernetes.io/env: dev
+  app.kubernetes.io/version: 1.0.0
+# ---------------------------------------------------
+# Deployment
+# ---------------------------------------------------
+deployment:
+  name: cart-deploy
+  replicas: 1
+# ---------------------------------------------------
+# Service
+# ---------------------------------------------------
+service:
+  name: cart-svc
+  type: ClusterIP
+  port: 8080
+  targetPort: 8080
+# ---------------------------------------------------
+# Pod Annotations
+# ---------------------------------------------------
+annotations:
+  enabled: true
+  enable_checksum: true
+  checksum_file: configmap.yaml
+  values:
+    reloader.stakater.com/auto: "true"
+# ---------------------------------------------------
+# Security Context
+# ---------------------------------------------------
+podSecurityContext:
+  enabled: true
+  values:
+    fsGroup: 2000
+    runAsNonRoot: true
+    runAsUser: 1000
+containerSecurityContext:
+  enabled: true
+  values:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
+# ---------------------------------------------------
+# Configmaps & Secrets
+# ---------------------------------------------------
+configmap:
+  enabled: true
+  name: cart-configmap
+  values:
+    REDIS_HOST: redis
+    CATALOGUE_HOST: catalogue
+    CATALOGUE_PORT: 8080
+secret:
+  name: roboshop-dev-mysql-jwt-credentials
+  create: false # Creates through ESO    
+envFrom:
+  enabled: true
+  values:
+    - configMapRef:
+        name: cart-configmap
+    # - secretRef:
+    #     name: roboshop-dev-mysql-jwt-credentials # Creates through ESO   
+# ---------------------------------------------------
+# Limits & Requests
+# ---------------------------------------------------
+resources:
+  enabled: true
+  values:
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+    limits:
+      cpu: "200m"
+      memory: "256Mi"
+# ---------------------------------------------------
+# Healthcheck Probes
+# ---------------------------------------------------
+startupProbe:
+  enabled: true
+  values:
+    httpGet:
+      path: /
+      port: 8080
+    failureThreshold: 10
+    periodSeconds: 10
+readinessProbe:
+  enabled: true
+  values:
+    httpGet:
+      path: /
+      port: 8080
+    initialDelaySeconds: 15
+    periodSeconds: 10
+livenessProbe:
+  enabled: true
+  values:
+    httpGet:
+      path: /
+      port: 8080
+    initialDelaySeconds: 20
+    periodSeconds: 30
+# ---------------------------------------------------
+# Autoscaling
+# ---------------------------------------------------
+autoscaling:
+  enabled: false
+  values:
+    name: cart-hpa
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 80
+# ---------------------------------------------------
+# Service Account
+# ---------------------------------------------------
+serviceAccount:
+  create: false
+  values:
+    name: cart-sa
+    annotations:
+      eks.amazonaws.com/role-arn: "arn:aws:iam::254405569649:role/roboshop-dev-cart-role"
+# ---------------------------------------------------
+# Target Group Binding
+# ---------------------------------------------------
+targetGroupBinding:
+  enabled: false
+  values:
+    name: roboshop-dev-cart-tgb
+    targetType: "ip"
+    targetGroupName: roboshop-dev-cart-tg
+    # targetGroupARN: "REPLACE_WITH_TERRAFORM_OUTPUT"
+# ---------------------------------------------------
+# Node Selectors
+# ---------------------------------------------------
+nodeSelector:
+  enabled: true
+  values:
+    workload: application
+# ---------------------------------------------------
+# Tolerations
+# ---------------------------------------------------
+tolerations:
+  enabled: true
+  values:
+    - key: dedicated
+      operator: Equal
+      value: application
+      effect: NoSchedule
