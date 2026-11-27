@@ -58,7 +58,7 @@ podSecurityContext:
     runAsNonRoot: true
     runAsUser: 1000
 containerSecurityContext:
-  enabled: true
+  enabled: false
   values:
     allowPrivilegeEscalation: false
     capabilities:
@@ -117,7 +117,7 @@ startupProbe:
     failureThreshold: 10
     periodSeconds: 10
 readinessProbe:
-  enabled: true
+  enabled: false
   values:
     httpGet:
       path: /
@@ -125,7 +125,7 @@ readinessProbe:
     initialDelaySeconds: 15
     periodSeconds: 10
 livenessProbe:
-  enabled: true
+  enabled: false
   values:
     httpGet:
       path: /
